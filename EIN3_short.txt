@@ -1,0 +1,16 @@
+TGA9	-225	-86
+TGA9_colamp	-267	-82
+EPR1_colamp	-1005	-803
+STZ_colamp	-797	-634
+DOF1.6_colamp	-688	-493
+REM19_colamp	-1379	-1161
+REM19_colamp	-704	-550
+DOF1.8_colamp	-999	-853
+HB33	-1464	-1304
+bZIP50_colamp	-226	-93
+HB24_colamp	-1484	-1244
+DOF2.2_colamp	-679	-506
+PEAR1_colamp	-695	-513
+SPL9	-181	-51
+SPL9_colamp	-208	-52
+
