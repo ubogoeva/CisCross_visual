@@ -1,11 +1,7 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+# This is shiny application for visualization transcription factors localization in gene promoters
+# This app was for CisCross tool: https://plamorph.sysbio.ru/ciscross/
+# Author: Elena Ubogoeva
+# github: https://github.com/ubogoeva/CisCross_visual
 
 library(shiny)
 # library (shinydashboard)
@@ -22,13 +18,16 @@ ui <- fluidPage(
   # load files
   sidebarLayout(
     sidebarPanel(
-      textOutput('text_for_files'),
+
+  
+  fluidRow(downloadButton("download", label = "Download sample data"),
+  actionButton('sample_run', 'Sample run'),
+  actionButton('sample_data', 'Show sample data')),
+  tableOutput("sample_head"),
+  textOutput('text_for_files'),
   fileInput("upload", "Upload a file", accept = c("text/csv",
                                                   "text/comma-separated-values,text/plain",
                                                   ".csv")),
-  
-  downloadButton("download", label = "Download sample data"),
-  actionButton('sample_run', 'Run using sample data'),
   textInput('gene_name', 'Enter gene name for plot title (optional)'),
   numericInput('prom_length', 'Enter promoter length (default 1500)', 
                value = 1500, max = 2500, min = 0),
@@ -49,9 +48,8 @@ ui <- fluidPage(
 )
 )
 
-# height = 1500-prom_length/2, width = 1500-prom_length, units = 'px'
 
-# Define server logic required to draw a TF ggplot2
+# Define server logic required to draw a TF plot using ggplot2
 server <- function(input, output) {
   output$welcome_text <- renderText(('It is alpha-version'))
   output$text_for_files <- renderText('Files could be tab- or comma-separated in .txt/.csv format without headers')
@@ -121,7 +119,12 @@ server <- function(input, output) {
     # plot_sample  <- renderPlot({  data$sample_plot })
   })
   output$plot_sample <- renderPlot({data$sample_plot}, res = 96)
-  
+  observeEvent(input$sample_data, {
+    sample_df <- reactive(vroom::vroom('data/template.txt', 
+                                       delim = "\t", 
+                                       col_names = c('TF', 'rel_beg', 'rel_end')))
+    output$sample_head <- renderTable({ head(sample_df(), 3) })
+  })
   observeEvent(input$result1,{
     data$plot <- df() %>%
       # mutate(height = 1+(1:nrow(df)))%>%
