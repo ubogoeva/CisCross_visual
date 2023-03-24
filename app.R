@@ -16,7 +16,7 @@ library(ggplot2)
 ui <- fluidPage(
 
   # Application title
-  titlePanel("Визуализация результатов CicCross"),
+  titlePanel("Transcription factor visualization in gene promoters"),
 
   textOutput('welcome_text'),
   # load files
@@ -29,8 +29,9 @@ ui <- fluidPage(
   
   downloadButton("download", label = "Download sample data"),
   actionButton('sample_run', 'Run using sample data'),
-  textInput('gene_name', 'Введите название гена'),
-  numericInput('prom_length', 'Введите длину промотора', value = -1500, min = -2500, max = 0),
+  textInput('gene_name', 'Enter gene name for plot title (optional)'),
+  numericInput('prom_length', 'Enter promoter length (default 1500)', 
+               value = -1500, min = -2500, max = 0),
   tableOutput("head"),
   fluidRow(
     
