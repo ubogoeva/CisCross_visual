@@ -12,7 +12,7 @@ library(shiny)
 
 library(dplyr)
 library(ggplot2)
-# Define UI for application that draws a histogram
+# Define UI for application
 ui <- fluidPage(
 
   # Application title
@@ -31,7 +31,7 @@ ui <- fluidPage(
   actionButton('sample_run', 'Run using sample data'),
   textInput('gene_name', 'Enter gene name for plot title (optional)'),
   numericInput('prom_length', 'Enter promoter length (default 1500)', 
-               value = -1500, min = -2500, max = 0),
+               value = 1500, max = 2500, min = 0),
   tableOutput("head"),
   fluidRow(
     
@@ -80,7 +80,7 @@ server <- function(input, output) {
     head(df(), 10)
   })
 
-  x_breaks_prom <- reactive(c(seq(input$prom_length-500,400,300)[seq(input$prom_length-500,400,300)!= 0]))
+  x_breaks_prom <- reactive(c(seq(-input$prom_length-500,400,300)[seq(-input$prom_length-500,400,300)!= 0]))
   
   # 
   data <- reactiveValues()
@@ -135,7 +135,7 @@ server <- function(input, output) {
       geom_text(aes(rel_end+30, height-0.08, label = rel_end), size = 2.5, color = 'black', show.legend = FALSE)+ # draw coordinate of ending
       geom_text(aes((rel_end+rel_beg)/2, height+0.5, label = TF), color = 'black',
                 size = 2.5, show.legend = FALSE)+ #draw TF label
-      scale_x_continuous(name = 'promoter', limits = c(input$prom_length-500,350),
+      scale_x_continuous(name = 'promoter', limits = c(-input$prom_length-500,350),
                          breaks = c(x_breaks_prom(),1),
                          labels = c(x_breaks_prom(),'+1'),
                          # sec.axis = dup_axis( name = paste0(c('genome coordinates',chr,':'),collapse = ' '),
@@ -161,13 +161,13 @@ server <- function(input, output) {
   output$tf_plot <- renderPlot({data$plot}, res = 96)
   
   output$ui_plot <- renderUI({
-    plotOutput("tf_plot", height = (1500-input$prom_length/2)/3, width = (1500-input$prom_length)/3)
+    plotOutput("tf_plot", height = (1500+input$prom_length/2)/3, width = (1500+input$prom_length)/3)
   })
   
   output$download_plot <- downloadHandler(
     filename = function(){paste("TF_plot",'.png',sep='')},
     content = function(file){
-      ggsave(file,plot=data$plot, height = (1500-input$prom_length/2), width = (1500-input$prom_length), dpi = 300, units = 'px')
+      ggsave(file,plot=data$plot, height = (1500+input$prom_length/2), width = (1500+input$prom_length), dpi = 300, units = 'px')
     }
   )
   # 
